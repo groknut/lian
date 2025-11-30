@@ -1,5 +1,3 @@
-
-
 #ifndef _MAP_H_
 #define _MAP_H_
 
@@ -16,11 +14,7 @@ struct Cell
 	int x = 0, y = 0;
 	bool value = false;
 
-// g = расстояние от старта до предыдущей клетки + расстояние от предыдущей клетки
-// эврестическая оценка
-// g + h
-// угол от предыдущей клетки к текущей
-	float g = 0.0f,
+	float g = numeric_limits<float>::max(),
 		h = 0.0f,
 		f = 0.0f;
 
@@ -34,6 +28,7 @@ struct Cell
 
 	Cell() = default;
 	Cell(const int& ax, const int& ay) : x(ax), y(ay) {}
+	Cell(const std::pair<int, int>& p) : y(p.second), x(p.first) {}
 };
 
 class Map
@@ -44,9 +39,12 @@ private:
 public:
 
 	Map(const std::string& filename);
-	const Cell& getCell(const int& y, const int& x) const;
-	bool isFree(const int& y, const int& x) const;
+	const Cell& getCell(const int& x, const int& y) const;
+	const Cell& getCell(const int& i) const;
+	bool isFree(const int& x, const int& y) const;
+	bool isFree(const Cell* cell) const;
 	friend ostream& operator << (ostream& out, const Map& map);
+	std::pair<int, int> shape() const { return std::make_pair(width, height); }
 };
 
 class ReadFileError {};
