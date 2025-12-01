@@ -2,12 +2,12 @@
 
 [lian]
 
-start: (0, 21)
-goal: (21, 0)
+start: (0, 0)
+goal: (800, 300)
 map: ./input/map.txt
 
-angle: 45
-theta: 2
+angle: 60
+theta: 80
 
-; можно выбрать эвристическую оценку для алгоритма
-; 
+[output]
+file: ./output/coords.txt
