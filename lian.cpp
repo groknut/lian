@@ -1,11 +1,5 @@
-#include "lian.h"
-#include <limits>
-#include <queue>
-#include <unordered_set>
-#include <cmath>
-#include <algorithm>
 
-using namespace std;
+#include "lian.h"
 
 bool CompareCell::operator()(Cell* a, Cell* b) const {
     return a->f > b->f;
@@ -136,13 +130,13 @@ float LIAN::calculateAngle(const Cell* parent, const Cell* current, const Cell* 
     	dy2 = successor->y - current->y;
     
     float dot = dx1 * dx2 + dy1 * dy2;
-    float mag1 = sqrt(dx1 * dx1 + dy1 * dy1);
-    float mag2 = sqrt(dx2 * dx2 + dy2 * dy2);
+    float m1 = sqrt(dx1 * dx1 + dy1 * dy1);
+    float m2 = sqrt(dx2 * dx2 + dy2 * dy2);
     
-    if (mag1 == 0 || mag2 == 0) 
+    if (m1 == 0 || m2 == 0) 
     	return 0.0f;
     
-    float cos_angle = dot / (mag1 * mag2);
+    float cos_angle = dot / (m1 * m2);
     cos_angle = max(-1.0f, min(1.0f, cos_angle));
     
     return acos(cos_angle);
@@ -177,6 +171,18 @@ bool LIAN::init(float& theta, float& max_angle, Cell*& start, Cell*& goal)
 	cout << "Start: (" << start_cell.y << ", " << start_cell.x << ")" << endl;
 	cout << "Goal: (" << goal_cell.y << ", " << goal_cell.x << ")" << endl;
 	cout << "Theta: " << theta << ", Max angle: " << max_angle * 180.0f / M_PI << " deg" << endl;
+
+	if (!map.isFind(start_cell))
+	{
+		cout << "Start point not found in map" << endl;
+		return false;
+	}
+
+	if (!map.isFind(goal_cell))
+	{
+		cout << "Goal point not found in map" << endl;
+		return false;
+	}
 
 	if (!map.isFree(start_cell.x, start_cell.y))
 	{
@@ -305,10 +311,10 @@ void LIAN::run() {
 
 		processNeighs(current, goal, theta, max_angle);
 
-		if (iters > 10000) {
-            cout << "Too many iterations, stopping..." << endl;
-            break;
-        }
+		// if (iters > 10000) {
+  //           cout << "Too many iterations, stopping..." << endl;
+  //           break;
+  //       }
 				
 	}
     
