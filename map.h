@@ -59,6 +59,8 @@ public:
 	friend ostream& operator << (ostream& out, const Map& map);
 	std::pair<int, int> shape() const { return std::make_pair(width, height); }
 
+	bool isFind(const Cell& cell) const;
+
 	void update(const vector<Cell>& path);
 	void updateCell(const int& x, const int& y, const CellType& ctype);
 	void updateCell(const Cell& cell, const CellType& ctype);

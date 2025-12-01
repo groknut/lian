@@ -7,6 +7,11 @@ float Cell::distanceTo(const Cell& other) const
 	);
 }
 
+bool Map::isFind(const Cell& cell) const
+{
+	return cell.x >= 0 && (size_t)cell.x < width && cell.y >= 0 && (size_t)cell.y < height;
+}
+
 ostream& operator<<(ostream& out, const CellType& ctype)
 {
 	switch (ctype)
