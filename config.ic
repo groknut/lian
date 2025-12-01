@@ -2,12 +2,12 @@
 
 [lian]
 
-start: (0, 0)
-goal: (800, 300)
+start: (165, 305)
+goal: (1287, 689)
 map: ./input/map.txt
 
-angle: 60
-theta: 80
+angle: 30
+theta: 50
 
 [output]
 file: ./output/coords.txt
