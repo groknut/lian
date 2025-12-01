@@ -11,4 +11,4 @@ uv run ./py/create-map.py ./input/karta-01.bmp
 echo %time%
 .\main.exe config.ic
 echo %time%
-uv run ./py/generate-map.py ./input/karta-01.bmp
+uv run py/generate-map.py ./input/karta-01.bmp ./output/path.png
