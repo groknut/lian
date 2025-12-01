@@ -1,7 +1,6 @@
 
 
 [lian]
-
 start: (165, 305)
 goal: (1287, 689)
 map: ./input/map.txt
