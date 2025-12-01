@@ -36,17 +36,17 @@ def generate_map(file, output_file):
     pp.imshow(res)
     pp.show()
     
-    pp.imsave("./output/path.png", res)
+    pp.imsave(output_file, res)
     
 def main():
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         print("""
-Usage: python main,py <input_map_file>
-Example: python generate-map.py ./input/karta-01.bmp
+Usage: python main,py <input_map_file> <output_map_file>
+Example: python generate-map.py ./input/karta-01.bmp ./output/file.png
         """)
         sys.exit(0)
     else:
-        create_map(sys.argv[1])
+        generate_map(sys.argv[1], sys.argv[2])
         sys.exit(0)
 
 if __name__ == "__main__":
