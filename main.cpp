@@ -38,6 +38,10 @@ int main(int argc, char* argv[])
 	    std::cout << "Path found with " << path.size() << " points:" << std::endl;
 	    for (const auto& cell : path) 
 	        std::cout << "(" << cell.x << ", " << cell.y << ")" << std::endl;
+
+	    map.update(path);
+	    if (w * h < 1000)
+    		cout << map << endl;
     }
     
     return 0;

@@ -37,7 +37,8 @@ vector<Cell*> LIAN::getCirclePoints(Cell* center, float& radius)
             int px = coords[i][0];
             int py = coords[i][1];
             
-            if (px >= 0 && px < width && py >= 0 && py < height) {
+            if (px >= 0 && px < width && py >= 0 && py < height) 
+            {
                 Cell* cell = const_cast<Cell*>(&map.getCell(px, py));
                 points.push_back(cell);
             }
@@ -277,6 +278,9 @@ void LIAN::run() {
     
     start->h = start->distanceTo(*goal);
     start->f = start->g + start->h;
+
+    start->value = CellType::START;
+	goal->value = CellType::GOAL;    
     
     openSet.push(start);
 
