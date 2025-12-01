@@ -7,6 +7,51 @@ float Cell::distanceTo(const Cell& other) const
 	);
 }
 
+ostream& operator<<(ostream& out, const CellType& ctype)
+{
+	switch (ctype)
+	{
+	case CellType::FREE:
+		out << "0";
+		break;
+	case CellType::OBSTACLE:
+		out << "1";
+		break;
+	case CellType::PATH:
+		out << "2";
+		break;
+	case CellType::START:
+		out << "A";
+		break;
+	case CellType::GOAL:
+		out << "B";
+		break;
+	default:
+		out << "?";
+	}
+	return out;
+}
+
+void Map::updateCell(const int& x, const int& y, const CellType& ctype)
+{
+	cells[y * width + x].value = ctype;	
+}
+
+void Map::updateCell(const Cell& cell, const CellType& ctype)
+{
+	updateCell(cell.x, cell.y, ctype);
+}
+
+void Map::update(const vector<Cell>& path)
+{
+	if (path.size() <= 2) return;
+
+	for (size_t i = 1; i < path.size() - 1; i++)
+	{
+		updateCell(path[i], CellType::PATH);
+	}
+}
+
 ostream& operator << (ostream& out, const Cell& cell)
 {
 	out << "(" << cell.y << ", " << cell.x << ", " << cell.value << ")" << std::endl;
@@ -36,7 +81,13 @@ Map::Map(const std::string& filename)
 		Cell& cell = cells[y * width + x];
 		cell.x = (short)x;
 		cell.y = (short)y;
-		cell.value = (val != '0');
+
+		if (val == '0')
+			cell.value = CellType::FREE;
+		else if (val == '1')
+			cell.value = CellType::OBSTACLE;
+		else
+			cell.value = CellType::FREE;
 
 		x++;
 		if (x >= width)
@@ -60,12 +111,28 @@ const Cell& Map::getCell(const int& i) const
 
 bool Map::isFree(const Cell* cell) const
 {
-	return ( (size_t)cell->x < 0 || (size_t)cell->x >= width || (size_t)cell->y < 0 || (size_t)cell->y >= height ) ? false : !getCell(cell->x, cell->y).value;
+	if ((size_t)cell->x < 0 || (size_t)cell->x >= width || (size_t)cell->y < 0 || (size_t)cell->y >= height)
+		return false;
+
+	CellType ctype = getCell(cell->x, cell->y).value;
+
+	if (ctype == CellType::FREE || ctype == CellType::START || ctype == CellType::GOAL)
+		return true;
+
+	return false;	
 }
 
 bool Map::isFree(const int& x, const int& y) const
 {
-	return ( (size_t)x < 0 || (size_t)x >= width || (size_t)y < 0 || (size_t)y >= height ) ? false : !getCell(x, y).value;
+	if ((size_t)x < 0 || (size_t)x >= width || (size_t)y < 0 || (size_t)y >= height)
+		return false;
+
+	CellType ctype = getCell(x, y).value;
+
+	if (ctype == CellType::FREE || ctype == CellType::START || ctype == CellType::GOAL)
+		return true;
+
+	return false;
 }
 
 ostream& operator << (ostream& out, const Map& map) 
@@ -76,7 +143,7 @@ ostream& operator << (ostream& out, const Map& map)
 	for (size_t y = 0; y < map.height; y++)
 	{
 		for (size_t x = 0; x < map.width; x++)
-			out << (map.isFree(x, y) ? '0' : '1');
+			out << map.cells[y * map.width + x].value;
 		out << std::endl;
 	}
 	out << std::endl;

@@ -9,10 +9,20 @@
 
 using namespace std;
 
+enum CellType : char
+{
+	FREE = '0',
+	OBSTACLE = '1',
+	PATH = '2',
+	START = 'A',
+	GOAL = 'B'
+};
+
 struct Cell
 {
 	int x = 0, y = 0;
-	bool value = false;
+	// bool value = false;
+	CellType value = CellType::FREE;
 
 	float g = numeric_limits<float>::max(),
 		h = 0.0f,
@@ -31,6 +41,9 @@ struct Cell
 	Cell(const std::pair<int, int>& p) : y(p.second), x(p.first) {}
 };
 
+ostream& operator << (ostream& out, const Cell& cell);
+ostream& operator<<(ostream& out, const CellType& ctype);
+
 class Map
 {
 private:
@@ -45,6 +58,11 @@ public:
 	bool isFree(const Cell* cell) const;
 	friend ostream& operator << (ostream& out, const Map& map);
 	std::pair<int, int> shape() const { return std::make_pair(width, height); }
+
+	void update(const vector<Cell>& path);
+	void updateCell(const int& x, const int& y, const CellType& ctype);
+	void updateCell(const Cell& cell, const CellType& ctype);
+	
 };
 
 class ReadFileError {};
