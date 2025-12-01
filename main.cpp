@@ -1,7 +1,7 @@
 #include <iostream>
-#include "ic.h"
-#include "map.h"
-#include "lian.h"
+#include "./head/ic.h"
+#include "./head/map.h"
+#include "./head/lian.h"
 using namespace std;
 
 void save(const string& filename, const vector<Cell>& path)
