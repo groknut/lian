@@ -56,7 +56,7 @@ class PathFinderApp:
             return False
         self.img = pp.imread(self.image_path)
         self.coords = self.config['output'].get('coords', './output/coords.txt')
-        self.output_file = self.config['output'].get('path_image', './output/path.png')
+        self.output_file = self.config['output'].get('output_file', './output/path.png')
 
     def create_map(self):
    
@@ -155,39 +155,41 @@ class PathFinderApp:
 
     def vizualize(self):
         res = self.img.copy()
-        of = open(self.coords, encoding='utf-8', mode='r').readlines()
+
+        with open(self.coords, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+              
+        if not lines:
+            print("not coords")
+            exit(0)
 
         points = []
         
-        if (len(of) == 0):
-            print("not coords")
-            exit(0)
-        
-        for s in of:
-            s = s.replace('\n', '').split(' ')
-            if s:
-                points.append(
-                    [int(s[0]), int(s[1])]
-                )
+        for l in lines:
+            l = l.strip()
+            if l:
+                x, y = map(int, l.split())
+                points.append([x, y])
+
         points = np.array(points)
+
+        self.fig, self.ax = pp.subplots()
+        self.ax.imshow(res)       
 
         for i in range(len(points) - 1):
             x1, y1 = tuple(points[i])
             x2, y2 = tuple(points[i + 1])            
 
-            pp.plot([x1, x2], [y1, y2], color='red', linewidth=2)
+            self.ax.plot([x1, x2], [y1, y2], color='red', linewidth=2)
 
         for point in points:
             x, y = point
             circle = pp.Circle((x, y), 4, color='blue', fill=True)
-            pp.gca().add_patch(circle)
-        
-        
-        pp.imshow(res)
+            self.ax.add_patch(circle)
+
+        pp.savefig(self.output_file)
         pp.show()
-        
-        pp.imsave(self.output_file, res)
-    
+            
     def run(self):
         """Запуск всего пайплайна"""
         print("🚀 Запуск пайплайна...")
