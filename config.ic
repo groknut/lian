@@ -1,12 +1,15 @@
-
+[input]
+image:./input/karta-01.bmp
+map:./input/map.txt
 
 [lian]
-start: (165, 305)
-goal: (1287, 689)
-map: ./input/map.txt
-
-angle: 30
-theta: 50
+start:(208, 620)
+goal:(1287, 688)
+map:./input/map.txt
+angle:30
+theta:50
 
 [output]
-file: ./output/coords.txt
+coords:./output/coords.txt
+path_image:./output/path.png
+
