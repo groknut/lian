@@ -147,9 +147,9 @@ class PathFinderApp:
 
     def start_cpp(self):
         if self.os_name == "nt":
-            sp.run("main.exe config.ic", shell=True)
+            sp.run(f"main.exe {self.config_file}", shell=True)
         elif self.os_name == "posix":
-            sp.run("main config.ic", shell=True)
+            sp.run(f"main {self.config_file}", shell=True)
         else:
             print("Your os not supported")
 
