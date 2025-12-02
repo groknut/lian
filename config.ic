@@ -3,8 +3,8 @@ image:./input/karta-01.bmp
 map:./input/map.txt
 
 [lian]
-start:(208, 620)
-goal:(1287, 688)
+start:(216, 624)
+goal:(1288, 686)
 map:./input/map.txt
 angle:30
 theta:50
