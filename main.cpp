@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
 
     Ic ic(argv[1]);
 
-	std::string map_filename = ic.getVal("lian", "map");
+	std::string map_filename = ic.getVal("input", "map");
     std::cout << "Map file: " << map_filename << std::endl;
     
     Map map(map_filename);
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 
 	    map.update(path);
 
-		save(ic.getVal("output", "file"), path);
+		save(ic.getVal("output", "coords"), path);
 	    
 	    if (w * h < 1000)
     		cout << map << endl;
