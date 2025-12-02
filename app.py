@@ -19,7 +19,6 @@ def timeit(func):
         return result
     return wrapper
 
-
 class PathFinderApp:
     def __init__(self, config_file="config.ic"):
         self.config_file = Path(config_file)
@@ -152,11 +151,13 @@ class PathFinderApp:
         
         with open(self.config_file, 'w') as f:
             self.config.write(f, space_around_delimiters=False)
+            
     @timeit
     def compile_cpp(self):
         exe_name = "main.exe" if self.os_name == "nt" else "main"
         if not os.path.exists(exe_name):
             sp.run("g++ main.cpp src/*.cpp -o main", shell=True)
+            
     @timeit
     def start_cpp(self):
         if self.os_name == "nt":
@@ -165,6 +166,7 @@ class PathFinderApp:
             sp.run(f"main {self.config_file}", shell=True)
         else:
             print("Your os not supported")
+            
     @timeit
     def vizualize(self):
         res = self.img.copy()
