@@ -15,7 +15,7 @@ uv sync
 
 3. **Запустите проект:**
 ```bash
-uv run app.py config.ic
+uv run app.py
 ```
 
 ### Конфигурация проекта
