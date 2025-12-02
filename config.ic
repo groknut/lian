@@ -3,13 +3,13 @@ image:./input/karta-01.bmp
 map:./input/map.txt
 
 [lian]
-start:(216, 624)
-goal:(1288, 686)
+start:(213, 626)
+goal:(1287, 686)
 map:./input/map.txt
 angle:30
 theta:50
 
 [output]
 coords:./output/coords.txt
-path_image:./output/path.png
+output_file:./output/path.png
 
