@@ -6,6 +6,19 @@ from pathlib import Path
 import sys
 import subprocess as sp
 import os
+import functools
+from datetime import datetime
+import time
+
+def timeit(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        print(f"{func.__name__}: {time.perf_counter() - start:.4f}с")
+        return result
+    return wrapper
+
 
 class PathFinderApp:
     def __init__(self, config_file="config.ic"):
@@ -57,7 +70,7 @@ class PathFinderApp:
         self.img = pp.imread(self.image_path)
         self.coords = self.config['output'].get('coords', './output/coords.txt')
         self.output_file = self.config['output'].get('output_file', './output/path.png')
-
+    @timeit
     def create_map(self):
    
         gray = self.img.mean(axis = 2)
@@ -73,7 +86,7 @@ class PathFinderApp:
             print(f"Load map in: {self.map_path}")
             return True
         return False
-
+    @timeit
     def gui(self):
         if not self.image_path or not Path(self.image_path).exists():
             print("Image not found")
@@ -139,12 +152,12 @@ class PathFinderApp:
         
         with open(self.config_file, 'w') as f:
             self.config.write(f, space_around_delimiters=False)
-
+    @timeit
     def compile_cpp(self):
         exe_name = "main.exe" if self.os_name == "nt" else "main"
         if not os.path.exists(exe_name):
             sp.run("g++ main.cpp src/*.cpp -o main", shell=True)
-
+    @timeit
     def start_cpp(self):
         if self.os_name == "nt":
             sp.run(f"main.exe {self.config_file}", shell=True)
@@ -152,7 +165,7 @@ class PathFinderApp:
             sp.run(f"main {self.config_file}", shell=True)
         else:
             print("Your os not supported")
-
+    @timeit
     def vizualize(self):
         res = self.img.copy()
 
