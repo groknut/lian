@@ -21,9 +21,9 @@ def create_map(input_file, output_file):
 
 def main():
     if len(sys.argv) != 3:
-        print("""
-Usage: python main,py <input_map_file> <output_file>
-Example: python create-map.py ./input/karta-01.bmp ./output/map.txt
+        print(f"""
+Usage: python {sys.argv[0]} <input_map_file> <output_file>
+Example: python {sys.argv[0]} ./input/karta-01.bmp ./output/map.txt
         """)
         sys.exit(0)
     else:

@@ -1,12 +1,8 @@
 import matplotlib.pyplot as pp
-import numpy as np
 import sys
 from matplotlib.animation import FuncAnimation
 
-def load_points(coords):
-    with open(coords, 'r') as f:
-    	points = np.array([list(map(int, line.split())) for line in f if line.strip()])
-    return points
+from config import load_points
 
 def animate_path(image, coords):
 
@@ -31,9 +27,13 @@ def animate_path(image, coords):
         return line
 
     dot.set_data([], [])
-    ani = FuncAnimation(fig, anim, frames=len(points),
-    init_func=lambda: (line.set_data([], []), dot.set_data([], [])),
-    interval=200)
+    ani = FuncAnimation(
+        fig, 
+        anim, 
+        frames=len(points),
+        init_func=lambda: (line.set_data([], []), dot.set_data([], [])),
+        interval=200
+    )
 
     return ani
 

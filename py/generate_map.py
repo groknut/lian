@@ -1,12 +1,7 @@
 
 import matplotlib.pyplot as pp
-import numpy as np
 import sys
-
-def load_points(coords):
-    with open(coords, 'r') as f:
-    	points = np.array([list(map(int, line.split())) for line in f if line.strip()])
-    return points
+from config import load_points
 
 def generate_map(file, coords ,output_file):
 
@@ -28,15 +23,12 @@ def generate_map(file, coords ,output_file):
     	ax.add_patch(pp.Circle((x, y), 4, color='blue', fill=True))
 
     pp.show()
-    fig.savefig(output_file, bbox_inches='tight')
-    print(f"✅ Saved: {output_file}")
-
     
 def main():
     if len(sys.argv) != 4:
-        print("""
-Usage: python generate_map.py <input_map_file> <file_coords>  <output_map_file>
-Example: python generate_map.py ./input/karta-01.bmp ./output/coords.txt ./output/file.png
+        print(f"""
+Usage: python {sys.argv[0]} <input_map_file> <file_coords>  <output_map_file>
+Example: python {sys.argv[0]} ./input/karta-01.bmp ./output/coords.txt ./output/file.png
         """)
         sys.exit(0)
     else:
