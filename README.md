@@ -42,7 +42,6 @@ path_image:./output/path.png
 
 ### Результат работы алгоритма
 ![Сгенерированный путь](./assets/path.png)
-<!-- ![Работа алгоритма](./assets/path.gif) -->
 <div align="center">
 <img src="./assets/path.gif" alt="Работа алгоритма">
 </div>
