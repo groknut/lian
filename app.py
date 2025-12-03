@@ -201,7 +201,8 @@ class PathFinderApp:
 		interval=200, repeat=False)
 
 		if self.animation["save_to_file"]:
-			ani.save(str(Path(self.output_file).with_suffix('.html')), writer='html', fps=5)
+			gif_path = str(Path(self.output_file).with_suffix('.gif'))
+			ani.save(gif_path, writer='pillow', fps=10, dpi=100)
 
 		return ani
 
