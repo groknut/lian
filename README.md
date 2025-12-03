@@ -40,4 +40,6 @@ coords:./output/coords.txt
 path_image:./output/path.png
 ```
 
-![Сгенерированный путь](./output/path.png)
+### Результат работы алгоритма
+![Сгенерированный путь](./assets/path.png)
+![Работа алгоритма](./assets/path.gif)
