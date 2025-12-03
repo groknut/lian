@@ -9,236 +9,267 @@ import os
 import functools
 from datetime import datetime
 import time
+from matplotlib.animation import FuncAnimation
 
 def timeit(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        start = time.perf_counter()
-        result = func(*args, **kwargs)
-        print(f"{func.__name__}: {time.perf_counter() - start:.4f}с")
-        return result
-    return wrapper
+	@functools.wraps(func)
+	def wrapper(*args, **kwargs):
+		start = time.perf_counter()
+		result = func(*args, **kwargs)
+		print(f"{func.__name__}: {time.perf_counter() - start:.4f}с")
+		return result
+	return wrapper
 
 class PathFinderApp:
-    def __init__(self, config_file="config.ic"):
-        self.config_file = Path(config_file)
-        self.config = configparser.ConfigParser(
-            delimiters=[':'],
-            comment_prefixes=[';'],  # строка начинается с ;
-            inline_comment_prefixes=[';']  # комментарий в конце строки
-        )
+	def __init__(self, config_file="config.ic"):
+		self.config_file = Path(config_file)
+		self.config = configparser.ConfigParser(
+			delimiters=[':'],
+			comment_prefixes=[';'],  # строка начинается с ;
+			inline_comment_prefixes=[';']  # комментарий в конце строки
+		)
 
-        self.load_config()
+		self.load_config()
 
-        self.points = []
+		self.points = []
 
-        self.img = None
+		self.img = None
 
-        self.image_path, self.map_path, self.output_file, self.coords = [None] * 4
+		self.image_path, self.map_path, self.output_file, self.coords = [None] * 4
 
-        self.fig, self.ax = [None] * 2
+		self.fig, self.ax = [None] * 2
 
-        self.bindings = {
-                "save": ['c', 'C'],
-                'reset': ['r', 'R']
-            }
-            
-        self.point_colors = {
-            'start': 'green',
-            'goal': 'red' 
-        }
+		self.bindings = {
+				"save": ['c', 'C'],
+				'reset': ['r', 'R']
+			}
+			
+		self.point_colors = {
+			'start': 'green',
+			'goal': 'red' 
+		}
 
-        self.os_name = os.name
+		self.animation = {
+			"enabled": False,
+			"save_to_file": False
+		}
 
-        self.init_from_config()
+		self.os_name = os.name
 
-    def load_config(self):
-        if self.config_file.exists():
-            self.config.read(self.config_file)
-            return {
-                sect: dict(self.config.items(sect)) for sect in self.config.sections()
-            }
-        return {}
+		self.init_from_config()
 
-    def init_from_config(self):
-        self.image_path = self.config['input'].get('image', './input/karta-01.bmp')
-        self.map_path = self.config['input'].get('map', './input/map.txt')
-        if not self.image_path or not Path(self.image_path).exists():
-            print("Image not found")
-            return False
-        self.img = pp.imread(self.image_path)
-        self.coords = self.config['output'].get('coords', './output/coords.txt')
-        self.output_file = self.config['output'].get('output_file', './output/path.png')
-    @timeit
-    def create_map(self):
+	def load_config(self):
+		if self.config_file.exists():
+			self.config.read(self.config_file)
+			return {
+				sect: dict(self.config.items(sect)) for sect in self.config.sections()
+			}
+		return {}
+
+	def init_from_config(self):
+		self.image_path = self.config['input'].get('image', './input/karta-01.bmp')
+		self.map_path = self.config['input'].get('map', './input/map.txt')
+		if not self.image_path or not Path(self.image_path).exists():
+			print("Image not found")
+			return False
+		self.img = pp.imread(self.image_path)
+		self.coords = self.config['output'].get('coords', './output/coords.txt')
+		self.output_file = self.config['output'].get('output_file', './output/path.png')
+
+		self.animation["enabled"] = self.config['animation'].get("enabled", "false") == "true"
+		self.animation["save_to_file"] = self.config['animation'].get("save_to_file", "false") == "true"
+		
+		
+	@timeit
+	def create_map(self):
    
-        gray = self.img.mean(axis = 2)
-        binary = gray < 0.05
+		gray = self.img.mean(axis = 2)
+		binary = gray < 0.05
 
-        if self.map_path:
-            f = open(self.map_path, encoding='utf-8', mode='w')
-            f.write(f"{binary.shape[1]} {binary.shape[0]}\n")
-            for i in range(binary.shape[0]):
-                for j in range(binary.shape[1]):
-                    f.write(str(int(binary[i][j])))
-                f.write('\n')
-            print(f"Load map in: {self.map_path}")
-            return True
-        return False
-    @timeit
-    def gui(self):
-        if not self.image_path or not Path(self.image_path).exists():
-            print("Image not found")
-            return
+		if self.map_path:
+			f = open(self.map_path, encoding='utf-8', mode='w')
+			f.write(f"{binary.shape[1]} {binary.shape[0]}\n")
+			for i in range(binary.shape[0]):
+				for j in range(binary.shape[1]):
+					f.write(str(int(binary[i][j])))
+				f.write('\n')
+			print(f"Load map in: {self.map_path}")
+			return True
+		return False
+	@timeit
+	def gui(self):
+		if not self.image_path or not Path(self.image_path).exists():
+			print("Image not found")
+			return
 
-        self.fig, self.ax = pp.subplots()
-        self.ax.imshow(self.img)
+		self.fig, self.ax = pp.subplots()
+		self.ax.imshow(self.img)
 
-        self.fig.canvas.mpl_connect('button_press_event', self.on_click)
-        self.fig.canvas.mpl_connect('key_press_event', self.on_key)
-        
-        self.ax.set_xlabel("Simple GUI for MAP", fontsize=10, labelpad=10)
-        
-        pp.tight_layout()
-        pp.show()
+		self.fig.canvas.mpl_connect('button_press_event', self.on_click)
+		self.fig.canvas.mpl_connect('key_press_event', self.on_key)
+		
+		self.ax.set_xlabel("Simple GUI for MAP", fontsize=10, labelpad=10)
+		
+		pp.tight_layout()
+		pp.show()
 
-    def on_click(self, event):
-        if event.inaxes != self.ax:
-            return
+	def on_click(self, event):
+		if event.inaxes != self.ax:
+			return
 
-        x, y = int(event.xdata), int(event.ydata)
+		x, y = int(event.xdata), int(event.ydata)
 
-        if len(self.points) >= 2:
-            self.points.clear()
-            self.ax.clear()
-            self.ax.imshow(self.img)
-            self.fig.canvas.draw()
+		if len(self.points) >= 2:
+			self.points.clear()
+			self.ax.clear()
+			self.ax.imshow(self.img)
+			self.fig.canvas.draw()
 
-        self.points.append((x, y))
-        color = self.point_colors['start'] if len(self.points) == 1 else self.point_colors['goal']
-        
-        self.ax.plot(x, y, 'o', color=color, markersize=8)
+		self.points.append((x, y))
+		color = self.point_colors['start'] if len(self.points) == 1 else self.point_colors['goal']
+		
+		self.ax.plot(x, y, 'o', color=color, markersize=8)
 
-        self.fig.canvas.draw()
+		self.fig.canvas.draw()
 
-    def on_key(self, event):
-    
-        if event.key in self.bindings['reset']:
-            self.points.clear()
-            self.ax.clear()
-            self.ax.imshow(self.img)
-            self.fig.canvas.draw()
+	def on_key(self, event):
+	
+		if event.key in self.bindings['reset']:
+			self.points.clear()
+			self.ax.clear()
+			self.ax.imshow(self.img)
+			self.fig.canvas.draw()
 
-        if event.key in self.bindings['save'] and len(self.points) == 2:
-                self.update_config(
-                    'lian', {
-                        'start': self.points[0],
-                        'goal': self.points[1]
-                    }
-                )
-                self.ax.set_xlabel("Save points", fontsize=10, labelpad=10)
-                pp.close()
-        
+		if event.key in self.bindings['save'] and len(self.points) == 2:
+				self.update_config(
+					'lian', {
+						'start': self.points[0],
+						'goal': self.points[1]
+					}
+				)
+				self.ax.set_xlabel("Save points", fontsize=10, labelpad=10)
+				pp.close()
+		
 
-    def update_config(self, section, updates):
-        """Обновляет любые значения в указанной секции"""
-               
-        if section not in self.config:
-            self.config[section] = {}
-        
-        for key, value in updates.items():
-            self.config[section][key] = str(value)
-        
-        with open(self.config_file, 'w') as f:
-            self.config.write(f, space_around_delimiters=False)
-            
-    @timeit
-    def compile_cpp(self):
-        exe_name = "main.exe" if self.os_name == "nt" else "main"
-        if not os.path.exists(exe_name):
-            sp.run("g++ main.cpp src/*.cpp -o main", shell=True)
-            
-    @timeit
-    def start_cpp(self):
-        if self.os_name == "nt":
-            sp.run(f"main.exe {self.config_file}", shell=True)
-        elif self.os_name == "posix":
-            sp.run(f"main {self.config_file}", shell=True)
-        else:
-            print("Your os not supported")
-            
-    @timeit
-    def vizualize(self):
-        res = self.img.copy()
+	def update_config(self, section, updates):
+		"""Обновляет любые значения в указанной секции"""
+			   
+		if section not in self.config:
+			self.config[section] = {}
+		
+		for key, value in updates.items():
+			self.config[section][key] = str(value)
+		
+		with open(self.config_file, 'w') as f:
+			self.config.write(f, space_around_delimiters=False)
+			
+	@timeit
+	def compile_cpp(self):
+		exe_name = "main.exe" if self.os_name == "nt" else "main"
+		if not os.path.exists(exe_name):
+			sp.run("g++ main.cpp src/*.cpp -o main", shell=True)
+			
+	@timeit
+	def start_cpp(self):
+		if self.os_name == "nt":
+			sp.run(f"main.exe {self.config_file}", shell=True)
+		elif self.os_name == "posix":
+			sp.run(f"main {self.config_file}", shell=True)
+		else:
+			print("Your os not supported")
 
-        with open(self.coords, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-              
-        if not lines:
-            print("not coords")
-            exit(0)
+	def _load_points(self):
+		with open(self.coords, 'r') as f:
+			points = np.array([list(map(int, line.split())) for line in f if line.strip()])
+		return points
 
-        points = []
-        
-        for l in lines:
-            l = l.strip()
-            if l:
-                x, y = map(int, l.split())
-                points.append([x, y])
+	def _animate_path(self, points):
+		line, = self.ax.plot([], [], 'r-', lw=2)
+		dot, = self.ax.plot([], [], 'blue', ms=8)
 
-        points = np.array(points)
+		for x, y in points:
+			self.ax.add_patch(pp.Circle((x, y), 4, color='blue', fill=True))
+		
+		def anim(frame):
+			if frame < len(points):
+				line.set_data(points[:frame+1, 0], points[:frame+1, 1])
+				dot, = self.ax.plot([], [], 'blue', ms=8)
+			return line
+		dot.set_data([], [])
+		ani = FuncAnimation(self.fig, anim, frames=len(points),
+		init_func=lambda: (line.set_data([], []), dot.set_data([], [])),
+		interval=200, repeat=False)
 
-        self.fig, self.ax = pp.subplots()
-        self.ax.imshow(res)       
+		if self.animation["save_to_file"]:
+			ani.save(str(Path(self.output_file).with_suffix('.html')), writer='html', fps=5)
 
-        for i in range(len(points) - 1):
-            x1, y1 = tuple(points[i])
-            x2, y2 = tuple(points[i + 1])            
+		return ani
 
-            self.ax.plot([x1, x2], [y1, y2], color='red', linewidth=2)
+	def _draw_final_path(self, points):
+		for i in range(len(points)-1):
+			self.ax.plot([points[i,0], points[i+1,0]], [points[i,1], points[i+1,1]], 'r-', lw=2)
 
-        for point in points:
-            x, y = point
-            circle = pp.Circle((x, y), 4, color='blue', fill=True)
-            self.ax.add_patch(circle)
+		for x, y in points:
+			self.ax.add_patch(pp.Circle((x, y), 4, color='blue', fill=True))
 
-        pp.savefig(self.output_file)
-        pp.show()
-            
-    def run(self):
-        """Запуск всего пайплайна"""
-        print("🚀 Запуск пайплайна...")
-        
-        # 1. Создание карты
-        print("\n1. Создание карты...")
-        if self.create_map():
-            print("✅ Карта создана")
-        else:
-            print("⚠ Не удалось создать карту")
-        
-        # 2. Запуск GUI
-        print("\n2. Запуск GUI...")
-        self.gui()
-        
-        # 3. Проверяем сохранены ли точки
-        if len(self.points) == 2:
-            print("\n🎯 Точки выбраны, готово к запуску алгоритма")
-        else:
-            print("\n⚠ Точки не выбраны")
-            exit(0)
-        # 4. Компиляция при необходимости
-        self.compile_cpp()
+	@timeit
+	def vizualize(self):
+		points = self._load_points()
+		
+		self.fig, self.ax = pp.subplots()
+		self.ax.imshow(self.img)
 
-        # 5. запуск алгоритм
-        self.start_cpp()
+		if self.animation["enabled"]:
+			ani = self._animate_path(points)
+			pp.show()
 
-        # визуализация результатов 
-        self.vizualize()
+			self.ax.clear()
+			self.ax.imshow(self.img)
+			self._draw_final_path(points)
+
+		else:
+			self._draw_final_path(points)
+
+		self.fig.savefig(self.output_file, bbox_inches='tight')
+		print(f"✅ Saved: {self.output_file}")
+
+		if not self.animation["enabled"]:
+			pp.show()
+			
+	def run(self):
+		"""Запуск всего пайплайна"""
+		print("🚀 Запуск пайплайна...")
+		
+		# 1. Создание карты
+		print("\n1. Создание карты...")
+		if self.create_map():
+			print("✅ Карта создана")
+		else:
+			print("⚠ Не удалось создать карту")
+		
+		# 2. Запуск GUI
+		print("\n2. Запуск GUI...")
+		self.gui()
+		
+		# 3. Проверяем сохранены ли точки
+		if len(self.points) == 2:
+			print("\n🎯 Точки выбраны, готово к запуску алгоритма")
+		else:
+			print("\n⚠ Точки не выбраны")
+			exit(0)
+		# 4. Компиляция при необходимости
+		self.compile_cpp()
+
+		# 5. запуск алгоритм
+		self.start_cpp()
+
+		# визуализация результатов 
+		self.vizualize()
 
 if len(sys.argv) == 2:
-    app = PathFinderApp(sys.argv[1])
-    app.run()
+	app = PathFinderApp(sys.argv[1])
+	app.run()
 else:
-    app = PathFinderApp()
-    app.run()
-    
+	app = PathFinderApp()
+	app.run()
+	
