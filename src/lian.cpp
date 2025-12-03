@@ -290,11 +290,8 @@ void LIAN::run() {
     
     openSet.push(start);
 
-	int iters = 0;
-
 	while (!openSet.empty())
 	{
-		iters++;
 		Cell* current = openSet.top();
 		openSet.pop();
 
@@ -305,18 +302,10 @@ void LIAN::run() {
 
 		if (checkGoal(current, goal, theta))
 		{
-			cout << "Goal reached after " << iters << " iterations!" << endl;
+			cout << "Goal reached!" << endl;
 			return;
 		}
 
 		processNeighs(current, goal, theta, max_angle);
-
-		// if (iters > 10000) {
-  //           cout << "Too many iterations, stopping..." << endl;
-  //           break;
-  //       }
-				
 	}
-    
-    cout << "Path not found after " << iters << " iterations!" << endl;
 }
