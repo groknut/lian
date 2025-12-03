@@ -96,6 +96,7 @@ class PathFinderApp:
 			print(f"Load map in: {self.map_path}")
 			return True
 		return False
+		
 	@timeit
 	def gui(self):
 		if not self.image_path or not Path(self.image_path).exists():
