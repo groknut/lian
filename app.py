@@ -7,7 +7,6 @@ import sys
 import subprocess as sp
 import os
 import functools
-from datetime import datetime
 import time
 from matplotlib.animation import FuncAnimation
 
@@ -34,8 +33,8 @@ class PathFinderApp:
 		self.points = []
 
 		self.img = None
-
 		self.image_path, self.map_path, self.output_file, self.coords = [None] * 4
+		self.cpp_app = None
 
 		self.fig, self.ax = [None] * 2
 
@@ -78,6 +77,8 @@ class PathFinderApp:
 
 		self.animation["enabled"] = self.config['animation'].get("enabled", "false") == "true"
 		self.animation["save_to_file"] = self.config['animation'].get("save_to_file", "false") == "true"
+
+		self.cpp_app = self.config['app'].get("name", "main")
 		
 		
 	@timeit
@@ -153,7 +154,6 @@ class PathFinderApp:
 		
 
 	def update_config(self, section, updates):
-		"""Обновляет любые значения в указанной секции"""
 			   
 		if section not in self.config:
 			self.config[section] = {}
@@ -166,18 +166,16 @@ class PathFinderApp:
 			
 	@timeit
 	def compile_cpp(self):
-		exe_name = "main.exe" if self.os_name == "nt" else "main"
-		if not os.path.exists(exe_name):
-			sp.run("g++ main.cpp src/*.cpp -o main", shell=True)
+		exe_path = str(Path(self.cpp_app).with_suffix('.exe'))  if os.name == "nt" else str(Path(self.cpp_app))
+		if not os.path.exists(exe_path):
+			sp.run(f"g++ main.cpp src/*.cpp -o {self.cpp_app}", shell=True)
 			
 	@timeit
 	def start_cpp(self):
-		if self.os_name == "nt":
-			sp.run(f"main.exe {self.config_file}", shell=True)
-		elif self.os_name == "posix":
-			sp.run(f"main {self.config_file}", shell=True)
-		else:
-			print("Your os not supported")
+		exe_path = str(Path(self.cpp_app).with_suffix('.exe'))  if os.name == "nt" else str(Path(self.cpp_app))
+		sp.run(
+			f"{exe_path} {self.config_file}", shell=True
+		)
 
 	def _load_points(self):
 		with open(self.coords, 'r') as f:
@@ -239,26 +237,26 @@ class PathFinderApp:
 			pp.show()
 			
 	def run(self):
-		"""Запуск всего пайплайна"""
-		print("🚀 Запуск пайплайна...")
+		print("🚀 Start pipeline...")
 		
 		# 1. Создание карты
-		print("\n1. Создание карты...")
+		print("\n1. Create map...")
 		if self.create_map():
-			print("✅ Карта создана")
+			print("✅ Map was create")
 		else:
-			print("⚠ Не удалось создать карту")
+			print("⚠ Map wasn't create")
 		
 		# 2. Запуск GUI
-		print("\n2. Запуск GUI...")
+		print("\n2. Start GUI...")
 		self.gui()
 		
 		# 3. Проверяем сохранены ли точки
 		if len(self.points) == 2:
-			print("\n🎯 Точки выбраны, готово к запуску алгоритма")
+			print("\n🎯 Start algorithm")
 		else:
-			print("\n⚠ Точки не выбраны")
+			print("\n⚠ No points selected")
 			exit(0)
+
 		# 4. Компиляция при необходимости
 		self.compile_cpp()
 
