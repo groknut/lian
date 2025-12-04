@@ -1,3 +1,6 @@
+[app]
+name:ant
+
 [input]
 image:./input/karta-01.bmp
 map:./input/map.txt
@@ -6,6 +9,8 @@ map:./input/map.txt
 map:./input/map.txt
 angle:40
 theta:80
+start:(204, 630)
+goal:(1289, 690)
 
 [output]
 coords:./output/coords.txt
