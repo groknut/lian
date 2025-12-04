@@ -1,7 +1,9 @@
 import matplotlib.pyplot as pp
 import numpy as np
 import sys
+from config import timeit
 
+@timeit
 def create_map(input_file, output_file):
     img = pp.imread(input_file)
     print("Image shape:", img.shape)

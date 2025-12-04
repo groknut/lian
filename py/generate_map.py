@@ -1,8 +1,9 @@
 
 import matplotlib.pyplot as pp
 import sys
-from config import load_points
+from config import load_points, timeit
 
+@timeit
 def generate_map(file, coords ,output_file):
 
     img = pp.imread(file)

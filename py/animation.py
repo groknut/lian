@@ -2,8 +2,9 @@ import matplotlib.pyplot as pp
 import sys
 from matplotlib.animation import FuncAnimation
 
-from config import load_points
+from config import load_points, timeit
 
+@timeit
 def animate_path(image, coords):
 
     img = pp.imread(image)
