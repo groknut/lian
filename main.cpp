@@ -4,24 +4,6 @@
 #include "./head/lian.h"
 using namespace std;
 
-void save(const string& filename, const vector<Cell>& path)
-{
-	std::ofstream out(filename);
-	if (!out.is_open())
-	{
-		cout << "File not found";
-		return;
-	}
-
-	for (auto& cell : path)
-	{
-		out << cell.x << ' ' << cell.y << endl;
-	}		
-
-	out.close();
-
-}
-
 int main(int argc, char* argv[])
 {
     if (argc < 2)
@@ -48,7 +30,7 @@ int main(int argc, char* argv[])
     lian.run();
 
     // Получаем и выводим результат
-    auto path = lian.returnPath();
+    auto path = lian.getPath();
 
     if (path.empty())
         std::cout << "No path found!" << std::endl;
@@ -56,11 +38,11 @@ int main(int argc, char* argv[])
     {
 	    std::cout << "Path found with " << path.size() << " points:" << std::endl;
 	    for (const auto& cell : path) 
-	        std::cout << "(" << cell.x << ", " << cell.y << ")" << std::endl;
+	        std::cout << "(" << cell.x << ", " << cell.y << ", " << cell.angle << ")" << std::endl;
 
 	    map.update(path);
 
-		save(ic.getVal("output", "coords"), path);
+		lian.save();
 	    
 	    if (w * h < 1000)
     		cout << map << endl;
