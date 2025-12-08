@@ -155,11 +155,6 @@ vector<Cell> LIAN::reconstructPath(Cell* goalCell) const
     return path;
 }
 
-vector<Cell> LIAN::returnPath() const 
-{
-    return path;
-}
-
 bool LIAN::init(float& theta, float& max_angle, Cell*& start, Cell*& goal)
 {
 	theta = ic.as_double("lian", "theta") > 0 ? ic.as_double("lian", "theta") : 10.0f;

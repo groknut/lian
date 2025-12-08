@@ -40,6 +40,7 @@ private:
 
 	// инициализация
 	bool init(float& theta, float& max_angle, Cell*& start, Cell*& goal);
+
 	// проверка, что достигли конечной точки
 	bool checkGoal(Cell* current, Cell* goal, float& theta);
 
@@ -52,7 +53,7 @@ private:
 public:
     LIAN(const Ic& aic, const Map& amap) : ic(aic), map(amap) {}
     void run();
-    std::vector<Cell> returnPath() const;
+    std::vector<Cell> returnPath() const { return path; }
 };
 
 #endif

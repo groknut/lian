@@ -50,7 +50,6 @@ private:
 	size_t width = 0, height = 0;
 	std::vector<Cell> cells;
 public:
-
 	Map(const std::string& filename);
 	const Cell& getCell(const int& x, const int& y) const;
 	const Cell& getCell(const int& i) const;
@@ -60,7 +59,7 @@ public:
 	std::pair<int, int> shape() const { return std::make_pair(width, height); }
 
 	bool isFind(const Cell& cell) const;
-
+	
 	void update(const vector<Cell>& path);
 	void updateCell(const int& x, const int& y, const CellType& ctype);
 	void updateCell(const Cell& cell, const CellType& ctype);

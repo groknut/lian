@@ -9,8 +9,8 @@ map:./input/map.txt
 map:./input/map.txt
 angle:40
 theta:80
-start:(211, 628)
-goal:(1291, 693)
+start:(207, 633)
+goal:(1288, 693)
 
 [output]
 coords:./output/coords.txt

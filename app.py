@@ -202,6 +202,7 @@ class PathFinderApp:
 		if self.animation["save_to_file"]:
 			gif_path = str(Path(self.output_file).with_suffix('.gif'))
 			ani.save(gif_path, writer='pillow', fps=10, dpi=100)
+			print(f"✅ Saved: {gif_path}")
 
 		return ani
 
