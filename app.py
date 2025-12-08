@@ -179,7 +179,7 @@ class PathFinderApp:
 
 	def _load_points(self):
 		with open(self.coords, 'r') as f:
-			points = np.array([list(map(int, line.split())) for line in f if line.strip()])
+			points = np.array([list(map(int, line.split()[:2])) for line in f if line.strip()])
 		return points
 
 	def _animate_path(self, points):
