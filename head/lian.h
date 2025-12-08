@@ -53,7 +53,8 @@ private:
 public:
     LIAN(const Ic& aic, const Map& amap) : ic(aic), map(amap) {}
     void run();
-    std::vector<Cell> returnPath() const { return path; }
+    std::vector<Cell> getPath() const { return path; }
+    void save();
 };
 
 #endif

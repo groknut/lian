@@ -133,7 +133,7 @@ float LIAN::calculateAngle(const Cell* parent, const Cell* current, const Cell* 
     float m1 = sqrt(dx1 * dx1 + dy1 * dy1);
     float m2 = sqrt(dx2 * dx2 + dy2 * dy2);
     
-    if (m1 == 0 || m2 == 0) 
+    if (m1 == 0 || m2 == 0 ) 
     	return 0.0f;
     
     float cos_angle = dot / (m1 * m2);
@@ -236,10 +236,12 @@ void LIAN::processNeighs(Cell* current, Cell* goal, float& theta, float& max_ang
 
 void LIAN::expand(Cell* current, Cell* neigh, Cell* goal, float& max_angle)
 {
+	float angle = 0.0f;
 
 	if (current->parent != nullptr)
 	{
-		if (calculateAngle(current->parent, current, neigh) > max_angle)
+		angle = calculateAngle(current->parent, current, neigh);
+		if (angle > max_angle)
 		{
 			return;
 		}
@@ -264,6 +266,7 @@ void LIAN::expand(Cell* current, Cell* neigh, Cell* goal, float& max_angle)
 		neigh->h = neigh->distanceTo(*goal);
 		neigh->f = neigh->g + neigh->h;
 		openSet.push(neigh);
+		neigh->angle = angle * 180.0f / M_PI;
 	}
 }
 
@@ -303,4 +306,28 @@ void LIAN::run() {
 
 		processNeighs(current, goal, theta, max_angle);
 	}
+}
+
+void LIAN::save()
+{
+	std::ofstream out(ic.getVal("output", "coords"));
+
+	if (!out.is_open())
+	{
+		cout << "File not found";
+		return;
+	}
+
+	if (path.empty())
+	{
+		cout << "Path not found";
+		return;
+	}
+
+	for (auto& cell: path)
+	{
+		out << cell.x << ' ' << cell.y << ' ' << cell.angle << endl;
+	}
+
+	out.close();
 }
