@@ -310,7 +310,7 @@ void LIAN::run() {
 
 void LIAN::save()
 {
-	std::ofstream out(ic.getVal("output", "coords"));
+	std::ofstream out(ic.getVal("output", "points"));
 
 	if (!out.is_open())
 	{
@@ -326,8 +326,41 @@ void LIAN::save()
 
 	for (auto& cell: path)
 	{
-		out << cell.x << ' ' << cell.y << ' ' << cell.angle << endl;
+		out << cell.x << ' ' << cell.y << ' ' << endl;
 	}
 
+	for (size_t i = 1; i < path.size(); i++)
+		cout << "[(" << path[i-1].x << ", " << path[i-1].y << "), (" << path[i].x << ", " << path[i].y << ")]: " << path[i].angle << endl;
+
 	out.close();
+
+	save_angles();
+	
+}
+
+
+void LIAN::save_angles()
+{
+	if (!ic.has("output", "angles"))
+		return;
+
+	std::ofstream out(ic.getVal("output", "angles"));
+
+	if (!out.is_open())
+	{
+		cout << "File not found";
+		return;
+	}
+
+	if (path.empty())
+	{
+		cout << "Path not found";
+		return;
+	}
+
+	for (size_t i = 1; i < path.size(); i++)
+		out << "[(" << path[i-1].x << ", " << path[i-1].y << "), (" << path[i].x << ", " << path[i].y << ")]: " << path[i].angle << endl;
+
+	out.close();
+	
 }

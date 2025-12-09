@@ -30,10 +30,10 @@ class PathFinderApp:
 
 		self.load_config()
 
-		self.points = []
+		self.point = []
 
 		self.img = None
-		self.image_path, self.map_path, self.output_file, self.coords = [None] * 4
+		self.image_path, self.map_path, self.output_file, self.points = [None] * 4
 		self.cpp_app = None
 
 		self.fig, self.ax = [None] * 2
@@ -72,7 +72,7 @@ class PathFinderApp:
 			print("Image not found")
 			return False
 		self.img = pp.imread(self.image_path)
-		self.coords = self.config['output'].get('coords', './output/coords.txt')
+		self.points = self.config['output'].get('points', './output/points.txt')
 		self.output_file = self.config['output'].get('output_file', './output/path.png')
 
 		self.animation["enabled"] = self.config['animation'].get("enabled", "false") == "true"
@@ -121,14 +121,14 @@ class PathFinderApp:
 
 		x, y = int(event.xdata), int(event.ydata)
 
-		if len(self.points) >= 2:
-			self.points.clear()
+		if len(self.point) >= 2:
+			self.point.clear()
 			self.ax.clear()
 			self.ax.imshow(self.img)
 			self.fig.canvas.draw()
 
-		self.points.append((x, y))
-		color = self.point_colors['start'] if len(self.points) == 1 else self.point_colors['goal']
+		self.point.append((x, y))
+		color = self.point_colors['start'] if len(self.point) == 1 else self.point_colors['goal']
 		
 		self.ax.plot(x, y, 'o', color=color, markersize=8)
 
@@ -137,16 +137,16 @@ class PathFinderApp:
 	def on_key(self, event):
 	
 		if event.key in self.bindings['reset']:
-			self.points.clear()
+			self.point.clear()
 			self.ax.clear()
 			self.ax.imshow(self.img)
 			self.fig.canvas.draw()
 
-		if event.key in self.bindings['save'] and len(self.points) == 2:
+		if event.key in self.bindings['save'] and len(self.point) == 2:
 				self.update_config(
 					'lian', {
-						'start': self.points[0],
-						'goal': self.points[1]
+						'start': self.point[0],
+						'goal': self.point[1]
 					}
 				)
 				self.ax.set_xlabel("Save points", fontsize=10, labelpad=10)
@@ -162,7 +162,7 @@ class PathFinderApp:
 			self.config[section][key] = str(value)
 		
 		with open(self.config_file, 'w') as f:
-			self.config.write(f, space_around_delimiters=False)
+			self.config.write(f, space_around_delimiters=True)
 			
 	@timeit
 	def compile_cpp(self):
@@ -178,7 +178,7 @@ class PathFinderApp:
 		)
 
 	def _load_points(self):
-		with open(self.coords, 'r') as f:
+		with open(self.points, 'r') as f:
 			points = np.array([list(map(int, line.split()[:2])) for line in f if line.strip()])
 		return points
 
@@ -252,7 +252,7 @@ class PathFinderApp:
 		self.gui()
 		
 		# 3. Проверяем сохранены ли точки
-		if len(self.points) == 2:
+		if len(self.point) == 2:
 			print("\n🎯 Start algorithm")
 		else:
 			print("\n⚠ No points selected")

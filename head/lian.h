@@ -50,6 +50,9 @@ private:
 	// expand функция
 	void expand(Cell* current, Cell* neigh, Cell* goal, float& max_angle);
 
+
+	void save_angles();
+
 public:
     LIAN(const Ic& aic, const Map& amap) : ic(aic), map(amap) {}
     void run();
