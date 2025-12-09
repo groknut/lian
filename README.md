@@ -44,9 +44,12 @@ theta:80
 
 ; что получаем на выходе
 [output]
-coords:./output/coords.txt
+; координаты точек в формате x y
+points:./output/points.txt
 ; название файл с анимацией будет ./output/path.gif
 output_file:./output/path.png
+; если указываем, то сохраняем в angles углы поворота между точками
+angles:./output/angles.txt
 
 ; параметры анимации
 [animation]
