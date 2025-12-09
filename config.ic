@@ -1,22 +1,23 @@
 [app]
-name:main
+name : main
 
 [input]
-image:./input/karta-01.bmp
-map:./input/map.txt
+image : ./input/karta-01.bmp
+map : ./input/map.txt
 
 [lian]
-map:./input/map.txt
-angle:40
-theta:80
-start:(207, 633)
-goal:(1288, 693)
+map : ./input/map.txt
+angle : 40
+theta : 80
+start : (212, 623)
+goal : (1286, 689)
 
 [output]
-coords:./output/coords.txt
-output_file:./output/path.png
+points : ./output/points.txt
+output_file : ./output/path.png
+angles : ./output/angles.txt
 
 [animation]
-enabled:true
-save_to_file:true
+enabled : true
+save_to_file : true
 
