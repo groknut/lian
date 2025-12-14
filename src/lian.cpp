@@ -157,11 +157,11 @@ vector<Cell> LIAN::reconstructPath(Cell* goalCell) const
 
 bool LIAN::init(float& theta, float& max_angle, Cell*& start, Cell*& goal)
 {
-	theta = ic.as_double("lian", "theta") > 0 ? ic.as_double("lian", "theta") : 10.0f;
-	max_angle = ic.as_double("lian", "angle") * M_PI / 180.0f;
+	theta = config.get<float>("lian", "theta", 10.0f);
+	max_angle = config.get<float>("lian", "angle", 50.0f) * M_PI / 180.0f;
 
-	Cell start_cell = Cell(ic.as_int_pair("lian", "start"));
-	Cell goal_cell = Cell(ic.as_int_pair("lian", "goal"));
+	Cell start_cell = Cell(config("lian", "start").toPair<int>());
+	Cell goal_cell = Cell(config("lian", "goal").toPair<int>());
 
 	cout << "Start: (" << start_cell.y << ", " << start_cell.x << ")" << endl;
 	cout << "Goal: (" << goal_cell.y << ", " << goal_cell.x << ")" << endl;
@@ -310,7 +310,7 @@ void LIAN::run() {
 
 void LIAN::save()
 {
-	std::ofstream out(ic.getVal("output", "points"));
+	std::ofstream out(config("output", "points"));
 
 	if (!out.is_open())
 	{
@@ -341,10 +341,10 @@ void LIAN::save()
 
 void LIAN::save_angles()
 {
-	if (!ic.has("output", "angles"))
+	if (!config.has("output", "angles"))
 		return;
 
-	std::ofstream out(ic.getVal("output", "angles"));
+	std::ofstream out(config("output", "angles"));
 
 	if (!out.is_open())
 	{

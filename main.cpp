@@ -1,20 +1,16 @@
 #include <iostream>
-#include "./head/ic.h"
+#include "./cfig/cfig.h"
 #include "./head/map.h"
 #include "./head/lian.h"
 using namespace std;
 
-int main(int argc, char* argv[])
+int main()
 {
-    if (argc < 2)
-    {
-        std::cout << "not file" << std::endl;
-        return 0;
-    }
 
-    Ic ic(argv[1]);
+	Cfig config("config.ini", Cfig::EQUAL, Cfig::HASH);
 
-	std::string map_filename = ic.getVal("input", "map");
+
+	std::string map_filename = config("input", "map");
     std::cout << "Map file: " << map_filename << std::endl;
     
     Map map(map_filename);
@@ -26,7 +22,7 @@ int main(int argc, char* argv[])
 		cout << map << endl;
 
     // Запускаем алгоритм LIAN
-    LIAN lian(ic, map);
+    LIAN lian(config, map);
     lian.run();
 
     // Получаем и выводим результат
