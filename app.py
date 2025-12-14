@@ -20,12 +20,12 @@ def timeit(func):
 	return wrapper
 
 class PathFinderApp:
-	def __init__(self, config_file="config.ic"):
+	def __init__(self, config_file="config.ini"):
 		self.config_file = Path(config_file)
 		self.config = configparser.ConfigParser(
-			delimiters=[':'],
-			comment_prefixes=[';'],  # строка начинается с ;
-			inline_comment_prefixes=[';']  # комментарий в конце строки
+			# delimiters=[':'],
+			# comment_prefixes=[';'],  # строка начинается с ;
+			# inline_comment_prefixes=[';']  # комментарий в конце строки
 		)
 
 		self.load_config()
@@ -79,8 +79,7 @@ class PathFinderApp:
 		self.animation["save_to_file"] = self.config['animation'].get("save_to_file", "false") == "true"
 
 		self.cpp_app = self.config['app'].get("name", "main")
-		
-		
+
 	@timeit
 	def create_map(self):
    
@@ -168,13 +167,13 @@ class PathFinderApp:
 	def compile_cpp(self):
 		exe_path = str(Path(self.cpp_app).with_suffix('.exe'))  if os.name == "nt" else str(Path(self.cpp_app))
 		if not os.path.exists(exe_path):
-			sp.run(f"g++ main.cpp src/*.cpp -o {self.cpp_app}", shell=True)
+			sp.run(f"g++ main.cpp cfig/cfig.cpp src/*.cpp -o {self.cpp_app}", shell=True)
 			
 	@timeit
 	def start_cpp(self):
 		exe_path = str(Path(self.cpp_app).with_suffix('.exe'))  if os.name == "nt" else str(Path(self.cpp_app))
 		sp.run(
-			f"{exe_path} {self.config_file}", shell=True
+			f"{exe_path}", shell=True
 		)
 
 	def _load_points(self):

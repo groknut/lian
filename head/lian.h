@@ -2,7 +2,7 @@
 #define _LIAN_H_
 
 #include "map.h"
-#include "ic.h"
+#include "../cfig/cfig.h"
 #include <queue>
 #include <unordered_set>
 #include <cmath>
@@ -16,7 +16,7 @@ struct CompareCell {
 class LIAN {
 private:
 
-    const Ic& ic;
+    const Cfig& config;
     const Map& map;
     
     std::priority_queue<Cell*, std::vector<Cell*>, CompareCell> openSet;
@@ -54,7 +54,7 @@ private:
 	void save_angles();
 
 public:
-    LIAN(const Ic& aic, const Map& amap) : ic(aic), map(amap) {}
+    LIAN(const Cfig& cfig, const Map& amap) : config(cfig), map(amap) {}
     void run();
     std::vector<Cell> getPath() const { return path; }
     void save();
