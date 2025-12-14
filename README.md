@@ -26,35 +26,28 @@ uv run app.py
 
 ### Конфигурация проекта
 ```ini
-; название компилируемого/запускаемого приложения
 [app]
-name: main
+name = main
 
-; входные файлы
 [input]
-image:./input/karta-01.bmp
-map:./input/map.txt
+image = ./input/karta-01.bmp
+map = ./input/map.txt
 
-; параметры алгоритма
 [lian]
-map:./input/map.txt
-angle:40
-theta:80
-; start и goal точки задаются в GUI
+map = ./input/map.txt
+angle = 40
+theta = 50
+start = (677, 775)
+goal = (724, 670)
 
-; что получаем на выходе
 [output]
-; координаты точек в формате x y
-points:./output/points.txt
-; название файл с анимацией будет ./output/path.gif
-output_file:./output/path.png
-; если указываем, то сохраняем в angles углы поворота между точками
-angles:./output/angles.txt
+points = ./output/points.txt
+output_file = ./output/path.png
+angles = ./output/angles.txt
 
-; параметры анимации
 [animation]
-enabled:true
-save_to_file:true
+enabled = true
+save_to_file = true
 ```
 
 ### Результат работы алгоритма
