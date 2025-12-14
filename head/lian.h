@@ -2,7 +2,7 @@
 #define _LIAN_H_
 
 #include "map.h"
-#include "../cfig/cfig.h"
+#include "cfig.h"
 #include <queue>
 #include <unordered_set>
 #include <cmath>

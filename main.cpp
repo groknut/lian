@@ -1,5 +1,5 @@
 #include <iostream>
-#include "./cfig/cfig.h"
+#include "cfig.h"
 #include "./head/map.h"
 #include "./head/lian.h"
 using namespace std;
