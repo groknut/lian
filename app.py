@@ -163,7 +163,7 @@ class PathFinderApp:
 	def compile_cpp(self):
 		exe_path = str(Path(self.cpp_app).with_suffix('.exe'))  if os.name == "nt" else str(Path(self.cpp_app))
 		if not os.path.exists(exe_path):
-			sp.run(f"g++ -Icfig main.cpp src/*.cpp -o {self.cpp_app}", shell=True)
+			sp.run(f"g++ -Ilibs/cfig main.cpp src/*.cpp libs/cfig/cfig.cpp -o {self.cpp_app}", shell=True)
 			
 	@timeit
 	def start_cpp(self):
