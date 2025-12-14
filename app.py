@@ -22,11 +22,7 @@ def timeit(func):
 class PathFinderApp:
 	def __init__(self, config_file="config.ini"):
 		self.config_file = Path(config_file)
-		self.config = configparser.ConfigParser(
-			# delimiters=[':'],
-			# comment_prefixes=[';'],  # строка начинается с ;
-			# inline_comment_prefixes=[';']  # комментарий в конце строки
-		)
+		self.config = configparser.ConfigParser()
 
 		self.load_config()
 
