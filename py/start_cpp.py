@@ -12,7 +12,7 @@ def compile_cpp(output_file):
     exe_path = str(Path(output_file).with_suffix('.exe'))  if os.name == "nt" else str(Path(output_file))
 
     if not os.path.exists(exe_path):
-        sp.run(f"g++ -Ilibs/cfig  main.cpp src/*.cpp libs/cfig/cfig.cpp -o main", shell=True)
+        sp.run(f"g++ -Ilibs/cfig  main.cpp src/*.cpp libs/cfig/cfig.cpp -o {output_file}", shell=True)
 
 @timeit
 def start_cpp(output_file):
