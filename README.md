@@ -36,7 +36,6 @@ image = ./input/karta-01.bmp
 map = ./input/map.txt
 
 [lian]
-map = ./input/map.txt
 angle = 40
 theta = 50
 start = (677, 775)
